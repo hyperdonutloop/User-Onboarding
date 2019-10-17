@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { withFormik, Form, Field, ErrorMessage } from "formik";
+import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 
 const UserForm = ({values, touched, errors, status}) => {
     const [user, setUser] = useState([]);
+    useEffect(() => {
+        status && setUser(user => [...user, status]);
+    }, [status]);
 
 
     return (
@@ -33,12 +36,20 @@ const UserForm = ({values, touched, errors, status}) => {
                 <label className="checkbox-container"> Agree to Terms and Conditions
                     <Field 
                         type="checkbox" 
-                        name="terms" 
+                        name="terms"
+                        checked={values.terms}
                     />
                     <span className="checkmark" />
                 </label>
-                <button>Submit!</button>
+                <button type="submit">Submit!</button>
             </Form>
+            {user.map (newUser => (
+                <ul key={newUser.id}>
+                    <li>Name: {newUser.name}</li>
+                    <li>Email: {newUser.email}</li>
+                    <li>Password: {newUser.password}</li>
+                </ul>
+            ))}
         </div>
 
 
@@ -61,7 +72,14 @@ const FormikUserForm = withFormik({
         password: Yup.string().required("Dude, just no.")
 
     }),    
-
+    handleSubmit(values, { setStatus }) {
+        axios.post("https://reqres.in/api/users/", values)
+        .then(res => {
+            setStatus(res.data);
+            
+        })
+        .catch(err => console.log(err.response));
+    }
     
 
 })(UserForm);
