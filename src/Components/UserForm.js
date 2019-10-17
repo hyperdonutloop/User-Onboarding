@@ -33,6 +33,12 @@ const UserForm = ({values, touched, errors, status}) => {
                     placeholder="Password" 
                 />
                 {touched.password && errors.password && <p className="errors">{errors.password}</p>}
+                <Field component="select" className="role-select" name="role">
+                    <option>Please Choose Your Role</option>
+                    <option value="engineer">Engineer</option>
+                    <option value="engineer">Manager</option>
+                    <option value="engineer">Wizard</option>
+                </Field>
                 <label className="checkbox-container"> Agree to Terms and Conditions
                     <Field 
                         type="checkbox" 
