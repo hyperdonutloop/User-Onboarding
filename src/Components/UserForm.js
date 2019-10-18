@@ -4,11 +4,49 @@ import { withFormik, Form, Field } from "formik";
 import * as Yup from "yup";
 import styled from "styled-components";
 
+const people = [
+    "Harry Potter",
+    "Luna Lovegood",
+    "Neville Longbottom",
+    "Hermione Granger",
+    "Ron Weasley",
+    "Ginny Weasley",
+    "Fred Weasley",
+    "George Weasley",
+    "Albus Dumbledore ",
+    "Aberforth Dumbledore ",
+    "Dudley Dursley ",
+    "Petunia Dursley ",
+    "Vernon Dursley",
+    "Cornelius Fudge",
+    "Rubeus Hagrid ",
+    "Viktor Krum ",
+    "Bellatrix Lestrange",
+    "Narcissa Malfoy",
+    "Draco Malfoy"
+];
+
 const UserForm = ({values, touched, errors, status}) => {
+
     const [user, setUser] = useState([]);
+
+    const [searchTerm, setSearchTerm] = React.useState("");
+    const [searchResults, setSearchResults] = React.useState([]);
+        const handleChange = event => {
+            setSearchTerm(event.target.value);
+    };
+     React.useEffect(() => {
+        const results = people.filter(person => 
+            person.toLowerCase().includes(searchTerm)
+        );
+        setSearchResults(results);
+    }, [searchTerm]);
+
     useEffect(() => {
         status && setUser(user => [...user, status]);
     }, [status]);
+
+   
 
     const FormWrapper = styled.div`
         h1 {
@@ -36,9 +74,10 @@ const UserForm = ({values, touched, errors, status}) => {
     
     `;
 
-
+    
+    //line 39 - created state named searchTerm. This saves the data from the search input on every occurance of the *change* event. The handleChange method takes the *event* object as the argument and sets the current value of the form to the searchTerm state using SetSearchTerm method provided by React.useState method.
     return (
-        <FormWrapper>
+        // <FormWrapper>
             <div className= "new-user-form">
                 <h1>Hello, who are you?</h1>
                 <Form>
@@ -85,6 +124,19 @@ const UserForm = ({values, touched, errors, status}) => {
                     <div className="button">
                         <button type="submit">Submit!</button>
                     </div>
+                    <div className = "search">
+                        <input
+                        type="text" 
+                        placeholder="Search"
+                        value={searchTerm}
+                        onChange={handleChange}
+                        />
+                        <ul>
+                            {searchResults.map(item => (
+                            <li>{item}</li>
+                            ))}
+                        </ul>
+                    </div>
                 </Form>
                 {user.map (newUser => (
                     <ul key={newUser.id}>
@@ -94,10 +146,9 @@ const UserForm = ({values, touched, errors, status}) => {
                     </ul>
                 ))}
             </div>
-        </FormWrapper>
-
+        // </FormWrapper>
     )
-
+//adding search form on line 93//
 }
 
 const FormikUserForm = withFormik({
